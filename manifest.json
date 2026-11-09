@@ -1,14 +1,20 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-28",
+  "generatedAt": "2026-11-09",
   "launcher": {
-    "version": "2.0.0",
-    "url": "https://github.com/awkdkawdkawk/pd-store-v6n43q/releases/download/v2.0.0/POLITDYNASTY-Setup-2.0.0.exe",
-    "sha256": "db6d49e624942a7253f19674470754c2794e6acfffc7216e7cdc1d6a4bb57d44",
-    "notes": "Текущая стабильная версия лаунчера.",
-    "sizeBytes": 96350123
+    "version": "2.1.0",
+    "url": "https://github.com/awkdkawdkawk/pd-store-v6n43q/releases/download/v2.1.0/POLITDYNASTY-Setup-2.1.0.exe",
+    "sha256": "TO_BE_FILLED",
+    "notes": "Наигранное время в профиле, Discord-статус, умный подбор памяти, анимация запуска.",
+    "sizeBytes": 0
   },
   "news": [
+    {
+      "id": "dev-3",
+      "title": "Лаунчер 2.1.0",
+      "date": "09.11.2026",
+      "text": "Новое: счётчик часов в профиле, статус в Discord во время игры, умный подбор памяти под ПК и плавная анимация запуска. Выход из игры больше не подвешивает лаунчер."
+    },
     {
       "id": "dev-1",
       "title": "Проект в разработке",
