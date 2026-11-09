@@ -4,9 +4,9 @@
   "launcher": {
     "version": "2.1.0",
     "url": "https://github.com/awkdkawdkawk/pd-store-v6n43q/releases/download/v2.1.0/POLITDYNASTY-Setup-2.1.0.exe",
-    "sha256": "fd9a84b3dbe9ff4902f67a48e51c7d1b9018551025ea9522aef1063a5ee8eef9",
+    "sha256": "1a52136e5b82503284e8d99c508ffba9034b9ff0ead3a03b20d88650ed7d194c",
     "notes": "Наигранное время в профиле, Discord-статус, умный подбор памяти, анимация запуска.",
-    "sizeBytes": 96368782
+    "sizeBytes": 96369418
   },
   "news": [
     {
