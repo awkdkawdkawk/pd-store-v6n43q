@@ -218,7 +218,7 @@ footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-righ
   <div class="chip" id="ver-chip"><span class="dot"></span>Сезон I · лаунчер 2.1.0</div>
   <div class="cta">
     <a class="btn btn-dl" id="dl-btn"
-       href="https://github.com/awkdkawdkawk/pd-store-v6n43q/releases/download/v2.1.0/POLITDYNASTY-Setup-2.1.0.exe"
+       href="https://politdynasty.pages.dev/cdn/releases/download/v2.1.0/POLITDYNASTY-Setup-2.1.0.exe"
        download rel="noopener">
       <svg><use href="#i-download"/></svg>Скачать лаунчер
     </a>
@@ -291,7 +291,7 @@ footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-righ
 
 /* манифест: версия и ссылка */
 (function () {
-  const MANIFEST = "https://raw.githubusercontent.com/awkdkawdkawk/pd-store-v6n43q/main/manifest.json";
+  const MANIFEST = "https://politdynasty.pages.dev/cdn/manifest.json";
 
   fetch(MANIFEST)
     .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
