@@ -31,9 +31,9 @@ async function proxy(request, env) {
 
   try {
     if (rel === "manifest.json") {
-      const r = await fetch("https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/manifest.json", {
+      const bucket = Math.floor(Date.now() / 60000);
+      const r = await fetch("https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/manifest.json?b=" + bucket, {
         headers: auth,
-        cf: { cacheTtl: 60 },
       });
       if (!r.ok) return new Response("manifest unavailable", { status: 502 });
       return new Response(r.body, {
@@ -81,7 +81,6 @@ async function proxy(request, env) {
       if (!/^[A-Za-z0-9._\-\/]+$/.test(rest)) return new Response("bad path", { status: 400 });
       const r = await fetch("https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/mods/" + rest, {
         headers: auth,
-        cf: { cacheTtl: 86400 },
       });
       if (!r.ok) return new Response("mod file not found", { status: r.status });
       return new Response(r.body, {
