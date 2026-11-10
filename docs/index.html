@@ -9,312 +9,529 @@
 <meta property="og:description" content="Minecraft-сервер о большой политике. Лаунчер сам всё установит и будет держать игру в актуальном состоянии.">
 <meta property="og:image" content="assets/earth.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0d0f14;
   --bg2: #12151c;
-  --panel: #171b23;
-  --panel2: #1c212b;
+  --panel: rgba(23, 27, 35, 0.72);
+  --panel-solid: #171b23;
   --border: rgba(86, 120, 154, 0.16);
-  --border2: rgba(86, 120, 154, 0.3);
+  --border2: rgba(86, 120, 154, 0.32);
   --text: #e8ebf0;
   --dim: #9aa4b2;
   --faint: #6b7686;
   --gold: #c9a45c;
   --gold2: #e0c084;
   --steel: #6ea8dc;
+  --steel-dim: rgba(110, 168, 220, 0.35);
   --danger: #e46a63;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  background:
-    radial-gradient(1100px 600px at 50% -10%, rgba(86, 120, 154, 0.14), transparent 60%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: hidden;
 }
-.mono { font-family: "Cascadia Code", Consolas, "JetBrains Mono", monospace; }
+.mono, .display { font-family: "Cascadia Code", Consolas, "JetBrains Mono", monospace; }
+.display { font-family: "Russo One", "Segoe UI", sans-serif; font-weight: 400; }
+::selection { background: rgba(201, 164, 92, 0.35); }
 
-/* ---------- header ---------- */
+/* ============ анимированный фон ============ */
+#starfield {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+.nebula {
+  position: fixed; z-index: 0; pointer-events: none;
+  width: 900px; height: 900px; border-radius: 50%;
+  filter: blur(90px); opacity: 0.55;
+}
+.nebula-steel {
+  top: -300px; left: -200px;
+  background: radial-gradient(circle, rgba(110, 168, 220, 0.13), transparent 65%);
+  animation: drift-a 46s ease-in-out infinite alternate;
+}
+.nebula-gold {
+  bottom: -350px; right: -250px; width: 760px; height: 760px;
+  background: radial-gradient(circle, rgba(201, 164, 92, 0.09), transparent 65%);
+  animation: drift-b 58s ease-in-out infinite alternate;
+}
+@keyframes drift-a { from { transform: translate(0, 0); } to { transform: translate(120px, 60px); } }
+@keyframes drift-b { from { transform: translate(0, 0); } to { transform: translate(-100px, -70px); } }
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(rgba(110, 168, 220, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 168, 220, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 30%, transparent 100%);
+}
+header, main, footer { position: relative; z-index: 1; }
+
+/* ============ header ============ */
 header {
   position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 28px;
-  background: rgba(13, 15, 20, 0.82);
-  backdrop-filter: blur(10px);
+  padding: 13px 28px;
+  background: rgba(13, 15, 20, 0.8);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-header img { width: 34px; height: 34px; }
-.brand { font-size: 14px; letter-spacing: 3px; font-weight: 600; }
-header nav { margin-left: auto; display: flex; gap: 22px; }
+header img { width: 32px; height: 32px; }
+.brand { font-family: "Russo One", sans-serif; font-size: 14px; letter-spacing: 2.5px; }
+.brand em { font-style: normal; color: var(--gold2); }
+header nav { margin-left: auto; display: flex; gap: 24px; }
 header nav a {
   color: var(--dim); text-decoration: none; font-size: 13.5px;
-  transition: color 0.18s;
+  position: relative; padding: 4px 0;
+  transition: color 0.2s;
 }
-header nav a:hover { color: var(--gold2); }
+header nav a::after {
+  content: ""; position: absolute; left: 0; bottom: 0;
+  width: 0; height: 1.5px; background: var(--gold);
+  transition: width 0.25s ease;
+}
+header nav a:hover { color: var(--text); }
+header nav a:hover::after { width: 100%; }
 
-/* ---------- hero ---------- */
+/* ============ hero ============ */
 .hero {
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 60px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  text-align: center; padding: 48px 24px 64px;
+  text-align: center; padding: 40px 24px 70px;
   position: relative; overflow: hidden;
 }
-.hero .earth {
-  width: min(46vh, 360px); height: auto;
-  filter: drop-shadow(0 0 60px rgba(110, 168, 220, 0.35));
-  animation: float 7s ease-in-out infinite;
+.earth-wrap { position: relative; width: min(44vh, 340px); }
+.earth-halo {
+  position: absolute; inset: -18%;
+  background: radial-gradient(circle, rgba(110, 168, 220, 0.22) 0%, transparent 62%);
+  animation: halo 6s ease-in-out infinite;
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
+@keyframes halo { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
+.earth-orbit {
+  position: absolute; inset: -13%;
+  border-radius: 50%;
+  border: 1px dashed rgba(110, 168, 220, 0.28);
+  animation: orbit 36s linear infinite;
+}
+.earth-orbit::before {
+  content: ""; position: absolute; top: -5px; left: 50%;
+  width: 9px; height: 9px; margin-left: -4.5px;
+  border-radius: 50%; background: var(--gold);
+  box-shadow: 0 0 10px rgba(201, 164, 92, 0.9);
+}
+.earth-orbit::after {
+  content: ""; position: absolute; bottom: -3px; left: 50%;
+  width: 6px; height: 6px; margin-left: -3px;
+  border-radius: 50%; background: var(--steel);
+  box-shadow: 0 0 8px rgba(110, 168, 220, 0.9);
+}
+@keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.earth-float { animation: float 7s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+.earth-wrap img {
+  width: 100%; height: auto; display: block;
+  filter: drop-shadow(0 0 46px rgba(110, 168, 220, 0.35));
 }
 .hero h1 {
-  margin-top: 26px;
-  font-family: Consolas, monospace;
-  font-size: clamp(30px, 6vw, 54px);
-  letter-spacing: 10px;
-  font-weight: 500;
-  color: var(--gold2);
-  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.65);
-}
-.hero .tagline { margin-top: 12px; color: var(--dim); font-size: 16.5px; max-width: 560px; }
-.hero .ver {
-  margin-top: 18px; font-size: 12px; letter-spacing: 1px;
-  color: var(--steel); border: 1px solid var(--border2);
-  padding: 7px 16px; border-radius: 999px;
-  background: rgba(110, 168, 220, 0.06);
-}
-.hero .cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-.btn {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 14px 30px; border-radius: 12px;
-  font-size: 15px; font-weight: 600; text-decoration: none;
-  cursor: pointer; transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s;
-}
-.btn-dl {
-  background: linear-gradient(180deg, #265c8e, #1d4a74);
-  color: #fff; border: 1px solid rgba(110, 168, 220, 0.4);
-  box-shadow: 0 6px 24px rgba(29, 74, 116, 0.45);
-}
-.btn-dl:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(41, 96, 145, 0.55); }
-.btn-ghost {
-  background: transparent; color: var(--dim);
-  border: 1px solid var(--border2);
-}
-.btn-ghost:hover { color: var(--text); border-color: var(--gold); background: rgba(201, 164, 92, 0.05); }
-
-/* ---------- sections ---------- */
-section { max-width: 1060px; margin: 0 auto; padding: 72px 24px; }
-.sec-title {
-  font-family: Consolas, monospace;
-  font-size: 13px; letter-spacing: 4px; color: var(--gold);
-  text-transform: uppercase;
-}
-.sec-head { font-size: clamp(22px, 3.4vw, 30px); font-weight: 600; margin-top: 8px; }
-.sec-sub { color: var(--dim); margin-top: 8px; font-size: 15px; max-width: 620px; }
-
-.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 34px; }
-.feat {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px; padding: 22px;
-  transition: transform 0.18s ease, border-color 0.18s ease;
-}
-.feat:hover { transform: translateY(-3px); border-color: var(--border2); }
-.feat .ico { font-size: 26px; }
-.feat h3 { margin-top: 12px; font-size: 15.5px; }
-.feat p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
-
-.news { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
-.news-item {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--gold);
-  border-radius: 12px; padding: 16px 20px;
-}
-.news-item .meta { display: flex; gap: 12px; align-items: baseline; }
-.news-item .date { font-size: 11.5px; color: var(--gold-strong, var(--gold)); }
-.news-item .title { font-weight: 600; font-size: 15px; }
-.news-item p { margin-top: 6px; color: var(--dim); font-size: 13.5px; }
-.news-loading, .news-error { color: var(--faint); font-size: 13px; padding: 10px 2px; }
-
-.season {
   margin-top: 30px;
-  background: linear-gradient(180deg, var(--panel2), var(--panel));
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 30px; text-align: center;
+  font-family: "Russo One", sans-serif;
+  font-size: clamp(32px, 6.4vw, 58px);
+  letter-spacing: 9px; font-weight: 400;
+  color: var(--gold2);
+  text-shadow: 0 2px 26px rgba(0, 0, 0, 0.7);
 }
-.season .live {
+.hero .tagline { margin-top: 14px; color: var(--dim); font-size: 16.5px; max-width: 580px; }
+.hero .chips { margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.chip {
   display: inline-flex; align-items: center; gap: 8px;
-  font-size: 13px; color: var(--steel);
-  border: 1px solid rgba(110, 168, 220, 0.3);
-  padding: 7px 16px; border-radius: 999px;
-  background: rgba(110, 168, 220, 0.06);
+  font-size: 12px; letter-spacing: 0.4px;
+  color: var(--steel); border: 1px solid rgba(110, 168, 220, 0.3);
+  padding: 7px 15px; border-radius: 999px;
+  background: rgba(110, 168, 220, 0.05);
 }
-.season .live .dot {
+.chip svg { width: 13px; height: 13px; }
+.chip .dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--steel);
   box-shadow: 0 0 8px rgba(110, 168, 220, 0.8);
   animation: pulse 2.4s ease-in-out infinite;
 }
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 6px rgba(110, 168, 220, 0.5); }
-  50% { box-shadow: 0 0 11px rgba(110, 168, 220, 0.85); }
+  0%, 100% { box-shadow: 0 0 5px rgba(110, 168, 220, 0.5); }
+  50% { box-shadow: 0 0 11px rgba(110, 168, 220, 0.9); }
 }
-.season h3 { margin-top: 16px; font-size: 20px; }
-.season p { color: var(--dim); margin-top: 6px; font-size: 14px; }
+.chip-gold { color: var(--gold2); border-color: rgba(201, 164, 92, 0.35); background: rgba(201, 164, 92, 0.05); }
+.hero .cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 30px; border-radius: 12px;
+  font-size: 15px; font-weight: 600; text-decoration: none;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s, color 0.18s;
+}
+.btn svg { width: 17px; height: 17px; }
+.btn-dl {
+  background: linear-gradient(180deg, #265c8e, #1d4a74);
+  color: #fff; border: 1px solid rgba(110, 168, 220, 0.4);
+  box-shadow: 0 6px 24px rgba(29, 74, 116, 0.45);
+}
+.btn-dl::before {
+  content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  animation: sheen 4.2s ease-in-out infinite;
+}
+@keyframes sheen { 0%, 55% { left: -80%; } 100% { left: 130%; } }
+.btn-dl:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(41, 96, 145, 0.55); }
+.btn-ghost { background: transparent; color: var(--dim); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--gold2); border-color: var(--gold); background: rgba(201, 164, 92, 0.06); }
+.hero .scroll-hint {
+  margin-top: 54px; color: var(--faint); font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; text-decoration: none;
+  animation: hint 2.2s ease-in-out infinite;
+}
+@keyframes hint { 0%, 100% { opacity: 0.55; transform: translateY(0); } 50% { opacity: 1; transform: translateY(5px); } }
 
-/* ---------- footer ---------- */
+/* ============ секции ============ */
+section { max-width: 1060px; margin: 0 auto; padding: 76px 24px; }
+.sec-title {
+  font-size: 12px; letter-spacing: 4px; color: var(--gold);
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px;
+}
+.sec-title::before { content: ""; width: 34px; height: 1px; background: var(--gold); opacity: 0.6; }
+.sec-head { font-family: "Russo One", sans-serif; font-size: clamp(22px, 3.4vw, 30px); font-weight: 400; margin-top: 10px; }
+.sec-sub { color: var(--dim); margin-top: 10px; font-size: 15px; max-width: 640px; }
+
+/* появление при скролле */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ============ шаги ============ */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 32px; counter-reset: step; }
+.step {
+  position: relative;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px 18px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.step:hover { border-color: var(--border2); transform: translateY(-3px); }
+.step::before {
+  counter-increment: step; content: "0" counter(step);
+  font-family: "Russo One", sans-serif;
+  font-size: 30px; color: transparent;
+  -webkit-text-stroke: 1px rgba(201, 164, 92, 0.55);
+  position: absolute; top: 14px; right: 16px;
+}
+.step h3 { margin-top: 10px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+.step h3 svg { width: 18px; height: 18px; color: var(--steel); flex: none; }
+.step p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
+.step .arrow { position: absolute; right: -14px; top: 50%; transform: translateY(-50%); color: var(--faint); z-index: 2; }
+.step:last-child .arrow { display: none; }
+@media (max-width: 860px) { .step .arrow { display: none; } }
+
+/* ============ возможности ============ */
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 14px; margin-top: 32px; }
+.feat {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  cursor: default;
+}
+.feat:hover { transform: translateY(-3px); border-color: var(--border2); background: var(--panel-solid); }
+.feat .ico {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--steel);
+  background: rgba(110, 168, 220, 0.08);
+  border: 1px solid rgba(110, 168, 220, 0.18);
+}
+.feat .ico svg { width: 20px; height: 20px; }
+.feat:hover .ico { color: var(--gold2); background: rgba(201, 164, 92, 0.08); border-color: rgba(201, 164, 92, 0.3); transition: color 0.25s, background 0.25s, border-color 0.25s; }
+.feat h3 { margin-top: 14px; font-size: 15.5px; }
+.feat p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
+
+/* ============ новости ============ */
+.news { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
+.news-item {
+  background: var(--panel); border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 12px; padding: 16px 20px;
+}
+.news-item .meta { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.news-item .date { font-size: 11.5px; color: var(--gold2); font-family: Consolas, monospace; }
+.news-item .title { font-weight: 600; font-size: 15px; }
+.news-item p { margin-top: 6px; color: var(--dim); font-size: 13.5px; }
+.news-loading, .news-error { color: var(--faint); font-size: 13px; padding: 10px 2px; }
+
+/* ============ низ ============ */
 footer {
   border-top: 1px solid var(--border);
-  padding: 28px 24px 40px;
+  padding: 30px 24px 42px;
   text-align: center; color: var(--faint); font-size: 12.5px;
 }
-footer .credits { margin-top: 8px; font-size: 13px; color: var(--dim); letter-spacing: 1px; }
+footer .credits { font-family: "Russo One", sans-serif; font-size: 13.5px; color: var(--dim); letter-spacing: 2px; }
+footer .credits em { font-style: normal; color: var(--gold2); }
+footer .fine { margin-top: 10px; max-width: 640px; margin-left: auto; margin-right: auto; }
 footer a { color: var(--dim); }
 
 @media (max-width: 640px) {
-  header { padding: 12px 16px; }
+  header { padding: 11px 14px; }
   header nav { gap: 14px; }
-  .hero h1 { letter-spacing: 6px; }
+  .hero h1 { letter-spacing: 5px; }
+  .scroll-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; }
 }
 </style>
 </head>
 <body>
 
+<canvas id="starfield"></canvas>
+<div class="nebula nebula-steel"></div>
+<div class="nebula nebula-gold"></div>
+<div class="bg-grid"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></g></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></g></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20"/></g></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l1.8-3A8 8 0 1 1 21 12z"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></g></symbol>
+    <symbol id="i-signal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M9 19V5"/><path d="M14 19v-8"/><path d="M19 19V3"/></g></symbol>
+    <symbol id="i-memory" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 5V3"/><path d="M15 5V3"/><path d="M9 21v-2"/><path d="M15 21v-2"/><path d="M5 9H3"/><path d="M5 15H3"/><path d="M21 9h-2"/><path d="M21 15h-2"/></g></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></g></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18"/><path d="M8 7h2"/><path d="M14 7h2"/><path d="M8 11h2"/><path d="M14 11h2"/><path d="M10 21v-4h4v4"/></g></symbol>
+    <symbol id="i-chevdown" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></g></symbol>
+    <symbol id="i-chat-ghost" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l1.8-3A8 8 0 1 1 21 12z"/><path d="M9 10h.01"/><path d="M12 10h.01"/><path d="M15 10h.01"/></g></symbol>
+  </defs>
+</svg>
+
 <header>
   <img src="assets/favicon.png" alt="PD">
-  <div class="brand mono">POLITDYNASTY</div>
+  <div class="brand">POLIT<em>DYNASTY</em></div>
   <nav>
+    <a href="#start">Как начать</a>
     <a href="#features">Возможности</a>
     <a href="#news">Новости</a>
-    <a href="#download">Скачать</a>
   </nav>
 </header>
 
+<main>
+
 <div class="hero">
-  <img class="earth" src="assets/earth.png" alt="Планета POLITDYNASTY">
+  <div class="earth-wrap">
+    <div class="earth-halo"></div>
+    <div class="earth-orbit"></div>
+    <img class="earth-float" src="assets/earth.png" alt="Планета POLITDYNASTY">
+  </div>
   <h1>POLITDYNASTY</h1>
   <div class="tagline">
     Minecraft-сервер о большой политике: строй города, создавай династию,
     выигрывай выборы и заключай союзы.
   </div>
-  <div class="ver mono" id="ver-badge">лаунчер 2.1.0</div>
+  <div class="chips">
+    <span class="chip"><span class="dot"></span>Сезон 1 · идёт</span>
+    <span class="chip" id="ver-chip"><svg><use href="#i-refresh"/></svg><span>лаунчер 2.1.0</span></span>
+  </div>
   <div class="cta" id="download">
     <a class="btn btn-dl" id="dl-btn"
        href="https://github.com/awkdkawdkawk/pd-store-v6n43q/releases/download/v2.1.0/POLITDYNASTY-Setup-2.1.0.exe"
        download>
-      ⬇ Скачать лаунчер
+      <svg><use href="#i-download"/></svg>Скачать лаунчер
     </a>
-    <a class="btn btn-ghost" href="#news">Что нового</a>
+    <a class="btn btn-ghost" href="#start">
+      <svg><use href="#i-play"/></svg>Как начать
+    </a>
   </div>
+  <a class="scroll-hint" href="#start">листай вниз</a>
 </div>
 
-<section id="features">
-  <div class="sec-title mono">Возможности</div>
-  <div class="sec-head">Всё честно и на автомате</div>
-  <div class="sec-sub">Лаунчер делает за тебя всю грязную работу: установка, обновления, память под твой ПК.</div>
-  <div class="features">
-    <div class="feat">
-      <div class="ico">🌍</div>
-      <h3>Установка в один клик</h3>
-      <p>Клиент, Java и игровые модули ставятся сами. Играешь сразу после загрузки.</p>
+<section id="start">
+  <div class="sec-title reveal">Начало</div>
+  <div class="sec-head reveal">Три шага до игры</div>
+  <div class="steps">
+    <div class="step reveal">
+      <h3><svg><use href="#i-download"/></svg>Скачай лаунчер</h3>
+      <p>Один файл с сайта — без спонсорских загрузок и левых ссылок.</p>
+      <svg class="arrow" width="16" height="16"><use href="#i-chevdown" transform="rotate(-90 8 8)"/></svg>
     </div>
-    <div class="feat">
-      <div class="ico">🎮</div>
-      <h3>Статус в Discord</h3>
-      <p>Пока играешь — в профиле видно «PolitDynasty»: таймер сессии и чем ты занят.</p>
+    <div class="step reveal">
+      <h3><svg><use href="#i-memory"/></svg>Запусти — он всё сделает</h3>
+      <p>Клиент, Java и игровые модули установятся сами под твой ПК.</p>
+      <svg class="arrow" width="16" height="16"><use href="#i-chevdown" transform="rotate(-90 8 8)"/></svg>
     </div>
-    <div class="feat">
-      <div class="ico">⏱</div>
-      <h3>История игры</h3>
-      <p>Лаунчер считает наигранное время и показывает его в профиле аккаунта.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">📡</div>
-      <h3>Состояние сервера</h3>
-      <p>Индикатор с откликом сервера до запуска игры — знаешь, жив ли мир, ещё до входа.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">🧠</div>
-      <h3>Умная память</h3>
-      <p>Лаунчер сам подбирает, сколько дать игре под твой ПК. Или выбери вручную.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">🔔</div>
-      <h3>Автообновления</h3>
-      <p>Новые версии приходят сами — остаётся нажать одну кнопку.</p>
+    <div class="step reveal">
+      <h3><svg><use href="#i-globe"/></svg>Заходи на сервер</h3>
+      <p>Строй династию, участвуй в выборах и пиши историю сезона.</p>
     </div>
   </div>
 </section>
 
-<div class="season">
-  <span class="live"><span class="dot"></span>Сезон 1 — Строим будущее</span>
-  <h3>Города · выборы · войны · дипломатия</h3>
-  <p>Заходи в игру, создавай династию и пиши историю сервера.</p>
-</div>
+<section id="features">
+  <div class="sec-title reveal">Возможности</div>
+  <div class="sec-head reveal">Лаунчер берёт рутину на себя</div>
+  <div class="sec-sub reveal">Никаких ручных обновлений, настроек памяти и поиска рабочих версий — обо всём уже позаботились.</div>
+  <div class="features">
+    <div class="feat reveal"><div class="ico"><svg><use href="#i-building"/></svg></div>
+      <h3>Установка в один клик</h3><p>Клиент, Java и игровые модули ставятся автоматически. Играешь сразу после загрузки.</p></div>
+    <div class="feat reveal"><div class="ico"><svg><use href="#i-chat-ghost"/></svg></div>
+      <h3>Статус в Discord</h3><p>Пока играешь — в профиле видно «PolitDynasty»: таймер сессии и чем ты занят.</p></div>
+    <div class="feat reveal"><div class="ico"><svg><use href="#i-clock"/></svg></div>
+      <h3>История игры</h3><p>Лаунчер считает наигранное время и показывает его в профиле аккаунта.</p></div>
+    <div class="feat reveal"><div class="ico"><svg><use href="#i-signal"/></svg></div>
+      <h3>Состояние сервера</h3><p>Индикатор с откликом сервера до запуска игры — входишь, когда мир в сети.</p></div>
+    <div class="feat reveal"><div class="ico"><svg><use href="#i-memory"/></svg></div>
+      <h3>Умная память</h3><p>Лаунчер сам подбирает, сколько дать игре под твой ПК. Или выбери вручную.</p></div>
+    <div class="feat reveal"><div class="ico"><svg><use href="#i-refresh"/></svg></div>
+      <h3>Автообновления</h3><p>Новые версии приходят сами — остаётся нажать одну кнопку.</p></div>
+  </div>
+</section>
 
 <section id="news">
-  <div class="sec-title mono">Новости</div>
-  <div class="sec-head">Что происходит</div>
+  <div class="sec-title reveal">Новости</div>
+  <div class="sec-head reveal">Что происходит</div>
   <div class="news" id="news-box">
     <div class="news-loading" id="news-loading">Загружаем новости…</div>
   </div>
 </section>
 
+</main>
+
 <footer>
-  <div class="credits mono">gredixjar · kukuku</div>
-  <div>© 2026 POLITDYNASTY. Minecraft — торговая марка Mojang AB. Проект не имеет отношения к Mojang и Microsoft.</div>
+  <div class="credits">gredixjar <em>·</em> kukuku</div>
+  <div class="fine">© 2026 POLITDYNASTY. Minecraft — торговая марка Mojang AB. Проект не имеет отношения к Mojang и Microsoft.</div>
 </footer>
 
 <script>
-// Живые данные из репо проекта: версия лаунчера и новости.
-// Кэш манифеста проверяется при каждом заходе — сайт всегда актуален.
-const MANIFEST = "https://raw.githubusercontent.com/awkdkawdkawk/pd-store-v6n43q/main/manifest.json";
+/* ---- фон: звёздное поле с мерцанием и медленным дрейфом ---- */
+(function () {
+  const cv = document.getElementById("starfield");
+  const ctx = cv.getContext("2d");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let stars = [], W = 0, H = 0;
 
-fetch(MANIFEST)
-  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then(m => {
-    // версия + ссылка скачивания из манифеста
-    const badge = document.getElementById("ver-badge");
-    const btn = document.getElementById("dl-btn");
-    if (m.launcher && m.launcher.version) {
-      badge.textContent = "лаунчер " + m.launcher.version;
-      if (m.launcher.url) { btn.href = m.launcher.url; }
+  function resize() {
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
+    const count = Math.min(160, Math.floor(W * H / 12000));
+    stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.4 + 0.3,
+        a: Math.random() * 0.5 + 0.12,
+        tw: Math.random() * 0.022 + 0.006,
+        p: Math.random() * Math.PI * 2,
+        vy: Math.random() * 0.09 + 0.02,
+        gold: Math.random() < 0.16
+      });
     }
-    // новости
-    const box = document.getElementById("news-box");
-    const loading = document.getElementById("news-loading");
-    if (loading) loading.remove();
-    if (Array.isArray(m.news) && m.news.length) {
-      box.innerHTML = "";
-      for (const item of m.news) {
-        const div = document.createElement("div");
-        div.className = "news-item";
-        const meta = document.createElement("div");
-        meta.className = "meta";
-        meta.innerHTML = '<span class="date mono"></span><span class="title"></span>';
-        meta.querySelector(".date").textContent = item.date || "";
-        meta.querySelector(".title").textContent = item.title || "";
-        const p = document.createElement("p");
-        p.textContent = item.text || "";
-        div.appendChild(meta);
-        div.appendChild(p);
-        box.appendChild(div);
+  }
+
+  let t = 0;
+  function frame() {
+    t++;
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      s.y += s.vy;
+      if (s.y > H + 2) { s.y = -2; s.x = Math.random() * W; }
+      const alpha = s.a * (0.55 + 0.45 * Math.sin(t * s.tw * 60 + s.p));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = s.gold
+        ? "rgba(201, 164, 92," + alpha + ")"
+        : "rgba(150, 185, 220," + alpha + ")";
+      ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+  if (reduced) {
+    // статичные звёзды без анимации
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = s.gold ? "rgba(201,164,92," + s.a + ")" : "rgba(150,185,220," + s.a + ")";
+      ctx.fill();
+    }
+  } else {
+    frame();
+  }
+})();
+
+/* ---- плавное появление секций при скролле ---- */
+(function () {
+  const els = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) {
+    els.forEach(e => e.classList.add("in"));
+    return;
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+  els.forEach(e => io.observe(e));
+})();
+
+/* ---- живые данные из манифеста: версия, ссылка скачивания, новости ---- */
+(function () {
+  const MANIFEST = "https://raw.githubusercontent.com/awkdkawdkawk/pd-store-v6n43q/main/manifest.json";
+
+  fetch(MANIFEST)
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(m => {
+      const chip = document.getElementById("ver-chip");
+      const btn = document.getElementById("dl-btn");
+      if (m.launcher && m.launcher.version) {
+        chip.querySelector("span").textContent = "лаунчер " + m.launcher.version;
+        if (m.launcher.url) btn.href = m.launcher.url;
       }
-    } else {
-      box.innerHTML = '<div class="news-error">Пока новостей нет.</div>';
-    }
-  })
-  .catch(() => {
-    const loading = document.getElementById("news-loading");
-    if (loading) loading.textContent = "Новости временно недоступны — загляните позже.";
-  });
+      const box = document.getElementById("news-box");
+      const loading = document.getElementById("news-loading");
+      if (loading) loading.remove();
+      if (Array.isArray(m.news) && m.news.length) {
+        box.innerHTML = "";
+        for (const item of m.news) {
+          const div = document.createElement("div");
+          div.className = "news-item";
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          meta.innerHTML = '<span class="date"></span><span class="title"></span>';
+          meta.querySelector(".date").textContent = item.date || "";
+          meta.querySelector(".title").textContent = item.title || "";
+          const p = document.createElement("p");
+          p.textContent = item.text || "";
+          div.appendChild(meta);
+          div.appendChild(p);
+          box.appendChild(div);
+        }
+      } else {
+        box.innerHTML = '<div class="news-error">Пока новостей нет.</div>';
+      }
+    })
+    .catch(() => {
+      const loading = document.getElementById("news-loading");
+      if (loading) loading.textContent = "Новости временно недоступны — загляните позже.";
+    });
+})();
 </script>
 
 </body>
