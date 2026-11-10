@@ -304,6 +304,43 @@ footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-righ
     })
     .catch(() => { /* остаётся дефолтная версия и ссылка */ });
 })();
+
+/* кнопка «Скачать»: гарантированное сохранение файла.
+   Тот же origin -> fetch -> blob -> <a download>. Любой сбой -> обычный переход по ссылке. */
+(function () {
+  const btn = document.getElementById("dl-btn");
+  const label = btn.innerHTML;
+  let busy = false;
+
+  btn.addEventListener("click", function (e) {
+    if (busy) { e.preventDefault(); return; }
+    const url = btn.href;
+    if (new URL(url).origin !== location.origin) return; // чужой домен -> как обычно
+    e.preventDefault();
+    busy = true;
+    btn.textContent = "Скачивается…";
+    fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.blob();
+      })
+      .then(blob => {
+        const a = document.createElement("a");
+        const nameMatch = new URL(url).pathname.split("/").pop() || "launcher-setup.exe";
+        a.href = URL.createObjectURL(blob);
+        a.download = nameMatch;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+      })
+      .catch(() => { window.location.href = url; /* запасной план */ })
+      .finally(() => {
+        btn.innerHTML = label;
+        busy = false;
+      });
+  });
+})();
 </script>
 
 </body>
