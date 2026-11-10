@@ -304,20 +304,6 @@ footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-righ
     })
     .catch(() => { /* остаётся дефолтная версия и ссылка */ });
 })();
-
-/* скачивание без перехода на GitHub: файл летит в загрузки через скрытый фрейм */
-(function () {
-  const btn = document.getElementById("dl-btn");
-  btn.addEventListener("click", function (e) {
-    e.preventDefault();
-    const url = btn.href;
-    const f = document.createElement("iframe");
-    f.style.display = "none";
-    f.src = url;
-    document.body.appendChild(f);
-    setTimeout(() => { f.remove(); }, 120000);
-  });
-})();
 </script>
 
 </body>
