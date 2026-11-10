@@ -11,11 +11,10 @@
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Cormorant:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0d0f14;
-  --bg2: #12151c;
   --panel: rgba(23, 27, 35, 0.72);
   --panel-solid: #171b23;
   --border: rgba(86, 120, 154, 0.16);
@@ -26,8 +25,7 @@
   --gold: #c9a45c;
   --gold2: #e0c084;
   --steel: #6ea8dc;
-  --steel-dim: rgba(110, 168, 220, 0.35);
-  --danger: #e46a63;
+  --serif: "Cormorant", "PT Serif", Georgia, serif;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -39,15 +37,10 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-.mono, .display { font-family: "Cascadia Code", Consolas, "JetBrains Mono", monospace; }
-.display { font-family: "Russo One", "Segoe UI", sans-serif; font-weight: 400; }
 ::selection { background: rgba(201, 164, 92, 0.35); }
 
-/* ============ анимированный фон ============ */
-#starfield {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none;
-}
+/* ============ фон ============ */
+#starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .nebula {
   position: fixed; z-index: 0; pointer-events: none;
   width: 900px; height: 900px; border-radius: 50%;
@@ -76,7 +69,7 @@ body {
 }
 header, main, footer { position: relative; z-index: 1; }
 
-/* ============ header ============ */
+/* ============ шапка ============ */
 header {
   position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; gap: 14px;
@@ -142,15 +135,33 @@ header nav a:hover::after { width: 100%; }
   width: 100%; height: auto; display: block;
   filter: drop-shadow(0 0 46px rgba(110, 168, 220, 0.35));
 }
+.hero .overline {
+  margin-top: 26px;
+  font-family: var(--serif); font-style: italic;
+  font-size: 15px; letter-spacing: 2px; color: var(--steel);
+  display: flex; align-items: center; gap: 16px;
+}
+.hero .overline::before, .hero .overline::after {
+  content: ""; width: 52px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+.hero .overline::after { background: linear-gradient(90deg, var(--gold), transparent); }
 .hero h1 {
-  margin-top: 30px;
+  margin-top: 10px;
   font-family: "Russo One", sans-serif;
   font-size: clamp(32px, 6.4vw, 58px);
   letter-spacing: 9px; font-weight: 400;
   color: var(--gold2);
   text-shadow: 0 2px 26px rgba(0, 0, 0, 0.7);
 }
-.hero .tagline { margin-top: 14px; color: var(--dim); font-size: 16.5px; max-width: 580px; }
+.hero .motto {
+  margin-top: 14px;
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.4vw, 22px);
+  font-weight: 500; color: var(--text); max-width: 620px;
+}
+.hero .motto em { color: var(--gold2); font-style: italic; }
+.hero .tagline { margin-top: 10px; color: var(--dim); font-size: 14.5px; max-width: 560px; }
 .hero .chips { margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .chip {
   display: inline-flex; align-items: center; gap: 8px;
@@ -170,7 +181,6 @@ header nav a:hover::after { width: 100%; }
   0%, 100% { box-shadow: 0 0 5px rgba(110, 168, 220, 0.5); }
   50% { box-shadow: 0 0 11px rgba(110, 168, 220, 0.9); }
 }
-.chip-gold { color: var(--gold2); border-color: rgba(201, 164, 92, 0.35); background: rgba(201, 164, 92, 0.05); }
 .hero .cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 .btn {
   display: inline-flex; align-items: center; gap: 10px;
@@ -207,71 +217,172 @@ section { max-width: 1060px; margin: 0 auto; padding: 76px 24px; }
   font-size: 12px; letter-spacing: 4px; color: var(--gold);
   text-transform: uppercase;
   display: flex; align-items: center; gap: 14px;
+  font-family: "Russo One", sans-serif; font-weight: 400;
 }
-.sec-title::before { content: ""; width: 34px; height: 1px; background: var(--gold); opacity: 0.6; }
-.sec-head { font-family: "Russo One", sans-serif; font-size: clamp(22px, 3.4vw, 30px); font-weight: 400; margin-top: 10px; }
+.sec-title::before {
+  content: ""; width: 10px; height: 10px; flex: none;
+  border: 1px solid var(--gold);
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, rgba(201, 164, 92, 0.35), transparent);
+}
+.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(201, 164, 92, 0.4), transparent 70%); }
+.sec-head {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 38px); font-weight: 600; margin-top: 12px;
+}
+.sec-head .drop:first-letter { color: var(--gold2); }
 .sec-sub { color: var(--dim); margin-top: 10px; font-size: 15px; max-width: 640px; }
 
-/* появление при скролле */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.in { opacity: 1; transform: none; }
 
-/* ============ шаги ============ */
-.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 32px; counter-reset: step; }
+/* ============ путь гражданина (шаги) ============ */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 34px; counter-reset: step; }
 .step {
   position: relative;
   background: var(--panel); border: 1px solid var(--border);
-  border-radius: 14px; padding: 22px 20px 18px;
+  border-radius: 14px; padding: 24px 20px 18px;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .step:hover { border-color: var(--border2); transform: translateY(-3px); }
 .step::before {
   counter-increment: step; content: "0" counter(step);
-  font-family: "Russo One", sans-serif;
-  font-size: 30px; color: transparent;
+  font-family: var(--serif); font-weight: 600;
+  font-size: 32px; color: transparent;
   -webkit-text-stroke: 1px rgba(201, 164, 92, 0.55);
-  position: absolute; top: 14px; right: 16px;
+  position: absolute; top: 16px; right: 18px;
 }
-.step h3 { margin-top: 10px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
-.step h3 svg { width: 18px; height: 18px; color: var(--steel); flex: none; }
+.step .roman {
+  font-family: var(--serif); font-weight: 600; font-size: 13px;
+  letter-spacing: 3px; color: var(--gold); text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+}
+.step .roman svg { width: 16px; height: 16px; color: var(--steel); flex: none; }
+.step h3 { margin-top: 8px; font-size: 15.5px; font-weight: 600; }
 .step p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
 .step .arrow { position: absolute; right: -14px; top: 50%; transform: translateY(-50%); color: var(--faint); z-index: 2; }
 .step:last-child .arrow { display: none; }
 @media (max-width: 860px) { .step .arrow { display: none; } }
 
-/* ============ возможности ============ */
-.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 14px; margin-top: 32px; }
-.feat {
+/* ============ механики власти ============ */
+.powers { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 16px; margin-top: 34px; }
+.power { position: relative; }
+.power .frame {
+  position: relative;
   background: var(--panel); border: 1px solid var(--border);
-  border-radius: 14px; padding: 22px;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-  cursor: default;
+  border-radius: 4px; padding: 26px 22px 22px;
+  height: 100%;
+  transition: border-color 0.25s ease, transform 0.22s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
-.feat:hover { transform: translateY(-3px); border-color: var(--border2); background: var(--panel-solid); }
-.feat .ico {
-  width: 40px; height: 40px; border-radius: 10px;
+.power .frame::before {
+  content: ""; position: absolute; inset: 5px;
+  border: 1px solid rgba(201, 164, 92, 0.18);
+  border-radius: 2px;
+  pointer-events: none;
+  transition: border-color 0.25s ease;
+}
+.power:hover .frame { transform: translateY(-3px); border-color: var(--border2); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45); }
+.power:hover .frame::before { border-color: rgba(201, 164, 92, 0.45); }
+.power .ico {
+  width: 42px; height: 42px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: var(--steel);
-  background: rgba(110, 168, 220, 0.08);
-  border: 1px solid rgba(110, 168, 220, 0.18);
+  color: var(--gold2);
+  border: 1px solid rgba(201, 164, 92, 0.4);
+  background: radial-gradient(circle at 35% 30%, rgba(201, 164, 92, 0.14), rgba(201, 164, 92, 0.03));
 }
-.feat .ico svg { width: 20px; height: 20px; }
-.feat:hover .ico { color: var(--gold2); background: rgba(201, 164, 92, 0.08); border-color: rgba(201, 164, 92, 0.3); transition: color 0.25s, background 0.25s, border-color 0.25s; }
-.feat h3 { margin-top: 14px; font-size: 15.5px; }
-.feat p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
+.power .ico svg { width: 20px; height: 20px; }
+.power h3 { font-family: var(--serif); font-weight: 600; font-size: 20px; margin-top: 16px; }
+.power .latin {
+  font-family: var(--serif); font-style: italic; font-size: 12.5px;
+  color: var(--steel); letter-spacing: 0.6px;
+}
+.power p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
 
-/* ============ новости ============ */
-.news { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
-.news-item {
-  background: var(--panel); border: 1px solid var(--border);
-  border-left: 3px solid var(--gold);
-  border-radius: 12px; padding: 16px 20px;
+/* ============ трибуна (цитата) ============ */
+.tribune {
+  max-width: 860px; margin: 8px auto 0; padding: 0 24px;
 }
-.news-item .meta { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
-.news-item .date { font-size: 11.5px; color: var(--gold2); font-family: Consolas, monospace; }
-.news-item .title { font-weight: 600; font-size: 15px; }
-.news-item p { margin-top: 6px; color: var(--dim); font-size: 13.5px; }
+.tribune .plate {
+  position: relative; text-align: center;
+  padding: 46px 40px 40px;
+  background:
+    radial-gradient(600px 200px at 50% 0%, rgba(110, 168, 220, 0.07), transparent 70%),
+    var(--panel);
+  border: 1px solid var(--border2); border-radius: 4px;
+}
+.tribune .plate::before {
+  content: ""; position: absolute; inset: 6px;
+  border: 1px solid rgba(201, 164, 92, 0.22); border-radius: 2px;
+  pointer-events: none;
+}
+.tribune .corner { position: absolute; width: 14px; height: 14px; border: 1.5px solid var(--gold); }
+.tribune .corner.tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+.tribune .corner.tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
+.tribune .corner.bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
+.tribune .corner.br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+.tribune .q {
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(21px, 3.4vw, 30px); line-height: 1.35;
+}
+.tribune .q em { color: var(--gold2); font-style: italic; }
+.tribune .who {
+  margin-top: 16px; font-size: 12px; letter-spacing: 3px;
+  color: var(--faint); text-transform: uppercase;
+}
+.tribune .stamp {
+  position: absolute; right: 26px; bottom: 22px;
+  width: 92px; height: 92px; border-radius: 50%;
+  border: 1.5px dashed rgba(201, 164, 92, 0.55);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; transform: rotate(11deg);
+  color: rgba(201, 164, 92, 0.75);
+  font-family: var(--serif); font-weight: 600; font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase;
+  animation: stamp-in 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) 0.9s both;
+}
+.tribune .stamp::before { content: ""; position: absolute; inset: 6px; border: 1px solid rgba(201, 164, 92, 0.3); border-radius: 50%; }
+.tribune .stamp .big { font-size: 17px; letter-spacing: 1px; }
+.tribune .stamp svg { width: 20px; height: 20px; }
+@keyframes stamp-in { from { opacity: 0; transform: rotate(11deg) scale(1.7); } to { opacity: 1; transform: rotate(11deg) scale(1); } }
+@media (max-width: 640px) { .tribune .stamp { position: static; margin: 18px auto 0; transform: rotate(-6deg); animation: none; } }
+
+/* ============ вестник (новости) ============ */
+.news { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; }
+.news-item {
+  position: relative;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 4px; padding: 18px 22px 16px 58px;
+}
+.news-item .no {
+  position: absolute; left: 18px; top: 16px;
+  font-family: var(--serif); font-weight: 600; font-size: 20px;
+  color: transparent; -webkit-text-stroke: 1px rgba(201, 164, 92, 0.6);
+  border: 1px solid rgba(201, 164, 92, 0.25); border-radius: 50%;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.news-item .meta { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.news-item .date { font-size: 11.5px; color: var(--gold2); font-family: Consolas, monospace; letter-spacing: 0.5px; }
+.news-item .title { font-family: var(--serif); font-weight: 600; font-size: 17.5px; }
+.news-item p { margin-top: 4px; color: var(--dim); font-size: 13.5px; }
 .news-loading, .news-error { color: var(--faint); font-size: 13px; padding: 10px 2px; }
+
+/* ============ инфраструктура ============ */
+.tech {
+  max-width: 860px; margin: 0 auto; padding: 0 24px 10px;
+  text-align: center;
+}
+.tech-box {
+  display: flex; flex-wrap: wrap; gap: 8px 6px; justify-content: center;
+  border-top: 1px solid var(--border);
+  padding-top: 26px;
+}
+.tech-chip {
+  font-size: 12.5px; color: var(--faint);
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.tech-chip svg { width: 13px; height: 13px; color: var(--steel); opacity: 0.7; }
+.tech-note { margin-top: 12px; font-size: 12.5px; color: var(--faint); }
 
 /* ============ низ ============ */
 footer {
@@ -279,7 +390,7 @@ footer {
   padding: 30px 24px 42px;
   text-align: center; color: var(--faint); font-size: 12.5px;
 }
-footer .credits { font-family: "Russo One", sans-serif; font-size: 13.5px; color: var(--dim); letter-spacing: 2px; }
+footer .credits { font-family: var(--serif); font-weight: 600; font-size: 15px; color: var(--dim); letter-spacing: 2px; }
 footer .credits em { font-style: normal; color: var(--gold2); }
 footer .fine { margin-top: 10px; max-width: 640px; margin-left: auto; margin-right: auto; }
 footer a { color: var(--dim); }
@@ -309,14 +420,15 @@ footer a { color: var(--dim); }
     <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></g></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></g></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20"/></g></symbol>
-    <symbol id="i-message" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l1.8-3A8 8 0 1 1 21 12z"/></g></symbol>
-    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></g></symbol>
-    <symbol id="i-signal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M9 19V5"/><path d="M14 19v-8"/><path d="M19 19V3"/></g></symbol>
-    <symbol id="i-memory" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 5V3"/><path d="M15 5V3"/><path d="M9 21v-2"/><path d="M15 21v-2"/><path d="M5 9H3"/><path d="M5 15H3"/><path d="M21 9h-2"/><path d="M21 15h-2"/></g></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></g></symbol>
     <symbol id="i-building" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18"/><path d="M8 7h2"/><path d="M14 7h2"/><path d="M8 11h2"/><path d="M14 11h2"/><path d="M10 21v-4h4v4"/></g></symbol>
     <symbol id="i-chevdown" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></g></symbol>
-    <symbol id="i-chat-ghost" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l1.8-3A8 8 0 1 1 21 12z"/><path d="M9 10h.01"/><path d="M12 10h.01"/><path d="M15 10h.01"/></g></symbol>
+    <symbol id="i-ballot" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M9 10V7.5A2.5 2.5 0 0 1 11.5 5h1A2.5 2.5 0 0 1 15 7.5V10"/><path d="M10 15h4"/></g></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M4 17l-1-9 5 4 4-7 4 7 5-4-1 9"/><circle cx="12" cy="4.5" r="1"/></g></symbol>
+    <symbol id="i-swords" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l12 12"/><path d="M20 4L8 16"/><path d="M14 18l4-4"/><path d="M6 18l4 4"/><path d="M4 18l4 4"/><path d="M16 18l4 4"/></g></symbol>
+    <symbol id="i-scales" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M8 20h8"/><path d="M4 7h16"/><path d="M7 7l-2.5 6a3.5 3.5 0 0 0 5 0z"/><path d="M17 7l-2.5 6a3.5 3.5 0 0 0 5 0z"/></g></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6.5" rx="7" ry="2.5"/><path d="M5 6.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/><path d="M5 11.5v5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-5"/></g></symbol>
+    <symbol id="i-quill" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4c-6 0-11 4-13 10l-2 6 6-2c6-2 10-7 10-13z"/><path d="M7 17c2-5 5-8 9-10"/></g></symbol>
   </defs>
 </svg>
 
@@ -324,9 +436,9 @@ footer a { color: var(--dim); }
   <img src="assets/favicon.png" alt="PD">
   <div class="brand">POLIT<em>DYNASTY</em></div>
   <nav>
-    <a href="#start">Как начать</a>
-    <a href="#features">Возможности</a>
-    <a href="#news">Новости</a>
+    <a href="#start">Путь гражданина</a>
+    <a href="#powers">Механики власти</a>
+    <a href="#news">Вестник</a>
   </nav>
 </header>
 
@@ -338,13 +450,15 @@ footer a { color: var(--dim); }
     <div class="earth-orbit"></div>
     <img class="earth-float" src="assets/earth.png" alt="Планета POLITDYNASTY">
   </div>
+  <div class="overline">Сервер о большой политике</div>
   <h1>POLITDYNASTY</h1>
+  <div class="motto">Власть здесь не дают. <em>Её берут.</em></div>
   <div class="tagline">
-    Minecraft-сервер о большой политике: строй города, создавай династию,
-    выигрывай выборы и заключай союзы.
+    Строй города шумят выборами, династии плетут союзы, а история сезона
+    пишется руками игроков.
   </div>
   <div class="chips">
-    <span class="chip"><span class="dot"></span>Сезон 1 · идёт</span>
+    <span class="chip"><span class="dot"></span>Сезон I · идёт</span>
     <span class="chip" id="ver-chip"><svg><use href="#i-refresh"/></svg><span>лаунчер 2.1.0</span></span>
   </div>
   <div class="cta" id="download">
@@ -354,7 +468,7 @@ footer a { color: var(--dim); }
       <svg><use href="#i-download"/></svg>Скачать лаунчер
     </a>
     <a class="btn btn-ghost" href="#start">
-      <svg><use href="#i-play"/></svg>Как начать
+      <svg><use href="#i-play"/></svg>Вступить в игру
     </a>
   </div>
   <a class="scroll-hint" href="#start">листай вниз</a>
@@ -362,54 +476,102 @@ footer a { color: var(--dim); }
 
 <section id="start">
   <div class="sec-title reveal">Начало</div>
-  <div class="sec-head reveal">Три шага до игры</div>
+  <div class="sec-head reveal">Путь гражданина</div>
+  <div class="sec-sub reveal">Три шага отделяют тебя от места в истории сервера.</div>
   <div class="steps">
     <div class="step reveal">
-      <h3><svg><use href="#i-download"/></svg>Скачай лаунчер</h3>
-      <p>Один файл с сайта — без спонсорских загрузок и левых ссылок.</p>
+      <div class="roman"><svg><use href="#i-download"/></svg>Шаг первый</div>
+      <h3>Подай заявление</h3>
+      <p>Скачай лаунчер — один файл с этого сайта, без сторонних ссылок.</p>
       <svg class="arrow" width="16" height="16"><use href="#i-chevdown" transform="rotate(-90 8 8)"/></svg>
     </div>
     <div class="step reveal">
-      <h3><svg><use href="#i-memory"/></svg>Запусти — он всё сделает</h3>
-      <p>Клиент, Java и игровые модули установятся сами под твой ПК.</p>
+      <div class="roman"><svg><use href="#i-refresh"/></svg>Шаг второй</div>
+      <h3>Прими присягу</h3>
+      <p>Запусти установку — клиент, Java и модули встанут сами под твой ПК.</p>
       <svg class="arrow" width="16" height="16"><use href="#i-chevdown" transform="rotate(-90 8 8)"/></svg>
     </div>
     <div class="step reveal">
-      <h3><svg><use href="#i-globe"/></svg>Заходи на сервер</h3>
-      <p>Строй династию, участвуй в выборах и пиши историю сезона.</p>
+      <div class="roman"><svg><use href="#i-globe"/></svg>Шаг третий</div>
+      <h3>Займи место в истории</h3>
+      <p>Заходи на сервер: выбирай династию и начинай свою игру.</p>
     </div>
   </div>
 </section>
 
-<section id="features">
-  <div class="sec-title reveal">Возможности</div>
-  <div class="sec-head reveal">Лаунчер берёт рутину на себя</div>
-  <div class="sec-sub reveal">Никаких ручных обновлений, настроек памяти и поиска рабочих версий — обо всём уже позаботились.</div>
-  <div class="features">
-    <div class="feat reveal"><div class="ico"><svg><use href="#i-building"/></svg></div>
-      <h3>Установка в один клик</h3><p>Клиент, Java и игровые модули ставятся автоматически. Играешь сразу после загрузки.</p></div>
-    <div class="feat reveal"><div class="ico"><svg><use href="#i-chat-ghost"/></svg></div>
-      <h3>Статус в Discord</h3><p>Пока играешь — в профиле видно «PolitDynasty»: таймер сессии и чем ты занят.</p></div>
-    <div class="feat reveal"><div class="ico"><svg><use href="#i-clock"/></svg></div>
-      <h3>История игры</h3><p>Лаунчер считает наигранное время и показывает его в профиле аккаунта.</p></div>
-    <div class="feat reveal"><div class="ico"><svg><use href="#i-signal"/></svg></div>
-      <h3>Состояние сервера</h3><p>Индикатор с откликом сервера до запуска игры — входишь, когда мир в сети.</p></div>
-    <div class="feat reveal"><div class="ico"><svg><use href="#i-memory"/></svg></div>
-      <h3>Умная память</h3><p>Лаунчер сам подбирает, сколько дать игре под твой ПК. Или выбери вручную.</p></div>
-    <div class="feat reveal"><div class="ico"><svg><use href="#i-refresh"/></svg></div>
-      <h3>Автообновления</h3><p>Новые версии приходят сами — остаётся нажать одну кнопку.</p></div>
+<section id="powers">
+  <div class="sec-title reveal">Устройство государства</div>
+  <div class="sec-head reveal">Шесть дорог к власти</div>
+  <div class="sec-sub reveal">Каждый игрок выбирает свой путь — или совмещает несколько.</div>
+  <div class="powers">
+    <div class="power reveal"><div class="frame">
+      <div class="ico"><svg><use href="#i-building"/></svg></div>
+      <h3>Города</h3><div class="latin">urbes</div>
+      <p>Закладывай кварталы, веди стройку и гордись силуэтом своей столицы.</p>
+    </div></div>
+    <div class="power reveal"><div class="frame">
+      <div class="ico"><svg><use href="#i-ballot"/></svg></div>
+      <h3>Выборы</h3><div class="latin">comitia</div>
+      <p>Кампании, дебаты и голосования — мандат получает тот, кто умеет убеждать.</p>
+    </div></div>
+    <div class="power reveal"><div class="frame">
+      <div class="ico"><svg><use href="#i-crown"/></svg></div>
+      <h3>Династии</h3><div class="latin">domus</div>
+      <p>Основай дом и передавай власть наследникам. Кровь здесь — валюта.</p>
+    </div></div>
+    <div class="power reveal"><div class="frame">
+      <div class="ico"><svg><use href="#i-swords"/></svg></div>
+      <h3>Войны</h3><div class="latin">bella</div>
+      <p>Границы проводятся не на бумаге: осады, фронты и цена каждого решения.</p>
+    </div></div>
+    <div class="power reveal"><div class="frame">
+      <div class="ico"><svg><use href="#i-scales"/></svg></div>
+      <h3>Дипломатия</h3><div class="latin">foedera</div>
+      <p>Союзы, договоры и торги. Сегодняшний союзник завтра может стать фронтом.</p>
+    </div></div>
+    <div class="power reveal"><div class="frame">
+      <div class="ico"><svg><use href="#i-coins"/></svg></div>
+      <h3>Казна</h3><div class="latin">fiscus</div>
+      <p>Экономика, налоги и торговые пути — войны выигрывают те, у кого хватает монет.</p>
+    </div></div>
   </div>
 </section>
+
+<div class="tribune reveal">
+  <div class="plate">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+    <div class="q">
+      «Здесь не спрашивают, кто сильнее.<br>
+      Спрашивают, <em>кто у власти.</em>»
+    </div>
+    <div class="who">— из законов сезона</div>
+    <div class="stamp">
+      <svg><use href="#i-crown"/></svg>
+      <span class="big">СЕЗОН I</span>
+      <span>совет династий</span>
+    </div>
+  </div>
+</div>
 
 <section id="news">
-  <div class="sec-title reveal">Новости</div>
-  <div class="sec-head reveal">Что происходит</div>
+  <div class="sec-title reveal">Вестник</div>
+  <div class="sec-head reveal">Сводки и указы</div>
   <div class="news" id="news-box">
-    <div class="news-loading" id="news-loading">Загружаем новости…</div>
+    <div class="news-loading" id="news-loading">Загружаем сводки…</div>
   </div>
 </section>
 
-</main>
+<div class="tech reveal">
+  <div class="tech-box">
+    <span class="tech-chip"><svg><use href="#i-refresh"/></svg>автообновления лаунчера</span>
+    <span class="tech-chip"><svg><use href="#i-download"/></svg>автоустановка клиента и Java</span>
+    <span class="tech-chip"><svg><use href="#i-globe"/></svg>индикатор сервера</span>
+    <span class="tech-chip"><svg><use href="#i-play"/></svg>статус в Discord</span>
+    <span class="tech-chip"><svg><use href="#i-ballot"/></svg>счёт наигранного времени</span>
+  </div>
+  <div class="tech-note">Всё это лаунчер делает сам — тебе остаётся только играть.</div>
+</div>
 
 <footer>
   <div class="credits">gredixjar <em>·</em> kukuku</div>
@@ -463,7 +625,6 @@ footer a { color: var(--dim); }
   resize();
   window.addEventListener("resize", resize);
   if (reduced) {
-    // статичные звёзды без анимации
     ctx.clearRect(0, 0, W, H);
     for (const s of stars) {
       ctx.beginPath();
@@ -476,7 +637,7 @@ footer a { color: var(--dim); }
   }
 })();
 
-/* ---- плавное появление секций при скролле ---- */
+/* ---- появление секций при скролле ---- */
 (function () {
   const els = document.querySelectorAll(".reveal");
   if (!("IntersectionObserver" in window)) {
@@ -491,7 +652,7 @@ footer a { color: var(--dim); }
   els.forEach(e => io.observe(e));
 })();
 
-/* ---- живые данные из манифеста: версия, ссылка скачивания, новости ---- */
+/* ---- живые данные из манифеста: версия, ссылка, новости ---- */
 (function () {
   const MANIFEST = "https://raw.githubusercontent.com/awkdkawdkawk/pd-store-v6n43q/main/manifest.json";
 
@@ -509,9 +670,14 @@ footer a { color: var(--dim); }
       if (loading) loading.remove();
       if (Array.isArray(m.news) && m.news.length) {
         box.innerHTML = "";
+        let n = 0;
         for (const item of m.news) {
+          n++;
           const div = document.createElement("div");
           div.className = "news-item";
+          const no = document.createElement("div");
+          no.className = "no";
+          no.textContent = n;
           const meta = document.createElement("div");
           meta.className = "meta";
           meta.innerHTML = '<span class="date"></span><span class="title"></span>';
@@ -519,17 +685,18 @@ footer a { color: var(--dim); }
           meta.querySelector(".title").textContent = item.title || "";
           const p = document.createElement("p");
           p.textContent = item.text || "";
+          div.appendChild(no);
           div.appendChild(meta);
           div.appendChild(p);
           box.appendChild(div);
         }
       } else {
-        box.innerHTML = '<div class="news-error">Пока новостей нет.</div>';
+        box.innerHTML = '<div class="news-error">Указов пока нет.</div>';
       }
     })
     .catch(() => {
       const loading = document.getElementById("news-loading");
-      if (loading) loading.textContent = "Новости временно недоступны — загляните позже.";
+      if (loading) loading.textContent = "Вестник временно недоступен — загляните позже.";
     });
 })();
 </script>
