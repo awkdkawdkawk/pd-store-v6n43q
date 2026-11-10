@@ -181,12 +181,6 @@ footer {
 footer .credits { font-family: "Russo One", sans-serif; font-size: 12.5px; color: var(--dim); letter-spacing: 2px; }
 footer .credits em { font-style: normal; color: var(--gold2); }
 footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-right: auto; font-size: 11.5px; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
-  html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; }
-}
 </style>
 </head>
 <body>
@@ -239,7 +233,6 @@ footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-righ
 (function () {
   const cv = document.getElementById("starfield");
   const ctx = cv.getContext("2d");
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let stars = [], W = 0, H = 0;
 
   function resize() {
@@ -327,17 +320,7 @@ footer .fine { margin-top: 8px; max-width: 640px; margin-left: auto; margin-righ
 
   resize();
   window.addEventListener("resize", resize);
-  if (reduced) {
-    ctx.clearRect(0, 0, W, H);
-    for (const s of stars) {
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = s.gold ? "rgba(201,164,92," + s.a + ")" : "rgba(150,185,220," + s.a + ")";
-      ctx.fill();
-    }
-  } else {
-    frame();
-  }
+  frame();
 })();
 
 /* манифест: версия и ссылка */
