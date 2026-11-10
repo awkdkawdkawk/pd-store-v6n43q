@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POLITDYNASTY — Minecraft-сервер о большой политике</title>
+<meta name="description" content="POLITDYNASTY — Minecraft-сервер о большой политике: строй города, создавай династию, выигрывай выборы и заключай союзы. Лаунчер сам всё установит.">
+<meta property="og:title" content="POLITDYNASTY">
+<meta property="og:description" content="Minecraft-сервер о большой политике. Лаунчер сам всё установит и будет держать игру в актуальном состоянии.">
+<meta property="og:image" content="assets/earth.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #12151c;
+  --panel: #171b23;
+  --panel2: #1c212b;
+  --border: rgba(86, 120, 154, 0.16);
+  --border2: rgba(86, 120, 154, 0.3);
+  --text: #e8ebf0;
+  --dim: #9aa4b2;
+  --faint: #6b7686;
+  --gold: #c9a45c;
+  --gold2: #e0c084;
+  --steel: #6ea8dc;
+  --danger: #e46a63;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(1100px 600px at 50% -10%, rgba(86, 120, 154, 0.14), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.mono { font-family: "Cascadia Code", Consolas, "JetBrains Mono", monospace; }
+
+/* ---------- header ---------- */
+header {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 28px;
+  background: rgba(13, 15, 20, 0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+header img { width: 34px; height: 34px; }
+.brand { font-size: 14px; letter-spacing: 3px; font-weight: 600; }
+header nav { margin-left: auto; display: flex; gap: 22px; }
+header nav a {
+  color: var(--dim); text-decoration: none; font-size: 13.5px;
+  transition: color 0.18s;
+}
+header nav a:hover { color: var(--gold2); }
+
+/* ---------- hero ---------- */
+.hero {
+  min-height: calc(100vh - 64px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 48px 24px 64px;
+  position: relative; overflow: hidden;
+}
+.hero .earth {
+  width: min(46vh, 360px); height: auto;
+  filter: drop-shadow(0 0 60px rgba(110, 168, 220, 0.35));
+  animation: float 7s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.hero h1 {
+  margin-top: 26px;
+  font-family: Consolas, monospace;
+  font-size: clamp(30px, 6vw, 54px);
+  letter-spacing: 10px;
+  font-weight: 500;
+  color: var(--gold2);
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.65);
+}
+.hero .tagline { margin-top: 12px; color: var(--dim); font-size: 16.5px; max-width: 560px; }
+.hero .ver {
+  margin-top: 18px; font-size: 12px; letter-spacing: 1px;
+  color: var(--steel); border: 1px solid var(--border2);
+  padding: 7px 16px; border-radius: 999px;
+  background: rgba(110, 168, 220, 0.06);
+}
+.hero .cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 14px 30px; border-radius: 12px;
+  font-size: 15px; font-weight: 600; text-decoration: none;
+  cursor: pointer; transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s;
+}
+.btn-dl {
+  background: linear-gradient(180deg, #265c8e, #1d4a74);
+  color: #fff; border: 1px solid rgba(110, 168, 220, 0.4);
+  box-shadow: 0 6px 24px rgba(29, 74, 116, 0.45);
+}
+.btn-dl:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(41, 96, 145, 0.55); }
+.btn-ghost {
+  background: transparent; color: var(--dim);
+  border: 1px solid var(--border2);
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--gold); background: rgba(201, 164, 92, 0.05); }
+
+/* ---------- sections ---------- */
+section { max-width: 1060px; margin: 0 auto; padding: 72px 24px; }
+.sec-title {
+  font-family: Consolas, monospace;
+  font-size: 13px; letter-spacing: 4px; color: var(--gold);
+  text-transform: uppercase;
+}
+.sec-head { font-size: clamp(22px, 3.4vw, 30px); font-weight: 600; margin-top: 8px; }
+.sec-sub { color: var(--dim); margin-top: 8px; font-size: 15px; max-width: 620px; }
+
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 34px; }
+.feat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.feat:hover { transform: translateY(-3px); border-color: var(--border2); }
+.feat .ico { font-size: 26px; }
+.feat h3 { margin-top: 12px; font-size: 15.5px; }
+.feat p { margin-top: 7px; color: var(--dim); font-size: 13.5px; }
+
+.news { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
+.news-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 12px; padding: 16px 20px;
+}
+.news-item .meta { display: flex; gap: 12px; align-items: baseline; }
+.news-item .date { font-size: 11.5px; color: var(--gold-strong, var(--gold)); }
+.news-item .title { font-weight: 600; font-size: 15px; }
+.news-item p { margin-top: 6px; color: var(--dim); font-size: 13.5px; }
+.news-loading, .news-error { color: var(--faint); font-size: 13px; padding: 10px 2px; }
+
+.season {
+  margin-top: 30px;
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 30px; text-align: center;
+}
+.season .live {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--steel);
+  border: 1px solid rgba(110, 168, 220, 0.3);
+  padding: 7px 16px; border-radius: 999px;
+  background: rgba(110, 168, 220, 0.06);
+}
+.season .live .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--steel);
+  box-shadow: 0 0 8px rgba(110, 168, 220, 0.8);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(110, 168, 220, 0.5); }
+  50% { box-shadow: 0 0 11px rgba(110, 168, 220, 0.85); }
+}
+.season h3 { margin-top: 16px; font-size: 20px; }
+.season p { color: var(--dim); margin-top: 6px; font-size: 14px; }
+
+/* ---------- footer ---------- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 24px 40px;
+  text-align: center; color: var(--faint); font-size: 12.5px;
+}
+footer .credits { margin-top: 8px; font-size: 13px; color: var(--dim); letter-spacing: 1px; }
+footer a { color: var(--dim); }
+
+@media (max-width: 640px) {
+  header { padding: 12px 16px; }
+  header nav { gap: 14px; }
+  .hero h1 { letter-spacing: 6px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="assets/favicon.png" alt="PD">
+  <div class="brand mono">POLITDYNASTY</div>
+  <nav>
+    <a href="#features">Возможности</a>
+    <a href="#news">Новости</a>
+    <a href="#download">Скачать</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <img class="earth" src="assets/earth.png" alt="Планета POLITDYNASTY">
+  <h1>POLITDYNASTY</h1>
+  <div class="tagline">
+    Minecraft-сервер о большой политике: строй города, создавай династию,
+    выигрывай выборы и заключай союзы.
+  </div>
+  <div class="ver mono" id="ver-badge">лаунчер 2.1.0</div>
+  <div class="cta" id="download">
+    <a class="btn btn-dl" id="dl-btn"
+       href="https://github.com/awkdkawdkawk/pd-store-v6n43q/releases/download/v2.1.0/POLITDYNASTY-Setup-2.1.0.exe"
+       download>
+      ⬇ Скачать лаунчер
+    </a>
+    <a class="btn btn-ghost" href="#news">Что нового</a>
+  </div>
+</div>
+
+<section id="features">
+  <div class="sec-title mono">Возможности</div>
+  <div class="sec-head">Всё честно и на автомате</div>
+  <div class="sec-sub">Лаунчер делает за тебя всю грязную работу: установка, обновления, память под твой ПК.</div>
+  <div class="features">
+    <div class="feat">
+      <div class="ico">🌍</div>
+      <h3>Установка в один клик</h3>
+      <p>Клиент, Java и игровые модули ставятся сами. Играешь сразу после загрузки.</p>
+    </div>
+    <div class="feat">
+      <div class="ico">🎮</div>
+      <h3>Статус в Discord</h3>
+      <p>Пока играешь — в профиле видно «PolitDynasty»: таймер сессии и чем ты занят.</p>
+    </div>
+    <div class="feat">
+      <div class="ico">⏱</div>
+      <h3>История игры</h3>
+      <p>Лаунчер считает наигранное время и показывает его в профиле аккаунта.</p>
+    </div>
+    <div class="feat">
+      <div class="ico">📡</div>
+      <h3>Состояние сервера</h3>
+      <p>Индикатор с откликом сервера до запуска игры — знаешь, жив ли мир, ещё до входа.</p>
+    </div>
+    <div class="feat">
+      <div class="ico">🧠</div>
+      <h3>Умная память</h3>
+      <p>Лаунчер сам подбирает, сколько дать игре под твой ПК. Или выбери вручную.</p>
+    </div>
+    <div class="feat">
+      <div class="ico">🔔</div>
+      <h3>Автообновления</h3>
+      <p>Новые версии приходят сами — остаётся нажать одну кнопку.</p>
+    </div>
+  </div>
+</section>
+
+<div class="season">
+  <span class="live"><span class="dot"></span>Сезон 1 — Строим будущее</span>
+  <h3>Города · выборы · войны · дипломатия</h3>
+  <p>Заходи в игру, создавай династию и пиши историю сервера.</p>
+</div>
+
+<section id="news">
+  <div class="sec-title mono">Новости</div>
+  <div class="sec-head">Что происходит</div>
+  <div class="news" id="news-box">
+    <div class="news-loading" id="news-loading">Загружаем новости…</div>
+  </div>
+</section>
+
+<footer>
+  <div class="credits mono">gredixjar · kukuku</div>
+  <div>© 2026 POLITDYNASTY. Minecraft — торговая марка Mojang AB. Проект не имеет отношения к Mojang и Microsoft.</div>
+</footer>
+
+<script>
+// Живые данные из репо проекта: версия лаунчера и новости.
+// Кэш манифеста проверяется при каждом заходе — сайт всегда актуален.
+const MANIFEST = "https://raw.githubusercontent.com/awkdkawdkawk/pd-store-v6n43q/main/manifest.json";
+
+fetch(MANIFEST)
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(m => {
+    // версия + ссылка скачивания из манифеста
+    const badge = document.getElementById("ver-badge");
+    const btn = document.getElementById("dl-btn");
+    if (m.launcher && m.launcher.version) {
+      badge.textContent = "лаунчер " + m.launcher.version;
+      if (m.launcher.url) { btn.href = m.launcher.url; }
+    }
+    // новости
+    const box = document.getElementById("news-box");
+    const loading = document.getElementById("news-loading");
+    if (loading) loading.remove();
+    if (Array.isArray(m.news) && m.news.length) {
+      box.innerHTML = "";
+      for (const item of m.news) {
+        const div = document.createElement("div");
+        div.className = "news-item";
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.innerHTML = '<span class="date mono"></span><span class="title"></span>';
+        meta.querySelector(".date").textContent = item.date || "";
+        meta.querySelector(".title").textContent = item.title || "";
+        const p = document.createElement("p");
+        p.textContent = item.text || "";
+        div.appendChild(meta);
+        div.appendChild(p);
+        box.appendChild(div);
+      }
+    } else {
+      box.innerHTML = '<div class="news-error">Пока новостей нет.</div>';
+    }
+  })
+  .catch(() => {
+    const loading = document.getElementById("news-loading");
+    if (loading) loading.textContent = "Новости временно недоступны — загляните позже.";
+  });
+</script>
+
+</body>
+</html>
