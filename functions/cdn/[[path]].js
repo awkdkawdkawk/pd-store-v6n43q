@@ -31,15 +31,17 @@ async function proxy(request, env) {
 
   try {
     if (rel === "manifest.json") {
-      const bucket = Math.floor(Date.now() / 60000);
+      const bucket = Date.now();
       const r = await fetch("https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/manifest.json?b=" + bucket, {
-        headers: auth,
+        headers: { Authorization: auth.Authorization, "Cache-Control": "no-store" },
+        cf: { cacheEverything: false, cacheTtl: 0 },
       });
       if (!r.ok) return new Response("manifest unavailable", { status: 502 });
       return new Response(r.body, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
-          "Cache-Control": "public, max-age=60",
+          "Cache-Control": "no-store",
+          "X-Bucket": String(bucket).slice(-6),
           "Access-Control-Allow-Origin": "*",
         },
       });
